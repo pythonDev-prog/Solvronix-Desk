@@ -24,7 +24,7 @@
 
       var self = this;
       document.addEventListener("keydown", function (e) {
-        if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+        if ((e.ctrlKey || e.metaKey) && (e.code === "KeyK" || (e.key || "").toLowerCase() === "k")) {
           if (frappe.boot && frappe.boot.enable_command_palette === 0) return;
           e.preventDefault();
           e.stopImmediatePropagation();
@@ -52,9 +52,10 @@
         var ref    = info.ref_doctype || "";
         var rtype  = info.report_type || "";
         items.push({
-          label:  name,
+          label:  __(name),
           sub:    ref ? ref : __("Report"),
           type:   "report",
+          search_text: name + " " + __(name),
           action: function () { frappe.set_route("query-report", name); },
         });
       });
@@ -65,10 +66,11 @@
         if (dt === "Theme Settings") return;
         var creatable = can_create.indexOf(dt) !== -1;
         items.push({
-          label:    dt,
+          label:    __(dt),
           sub:      creatable ? __("Open list · Ctrl+N to create") : __("Open list"),
           type:     "doctype",
           creatable: creatable,
+          search_text: dt + " " + __(dt),
           action:   function () { frappe.set_route("List", dt); },
           new_action: creatable ? function () { frappe.new_doc(dt); } : null,
         });
@@ -80,9 +82,10 @@
         var workspace_route = page.route ||
           ((frappe.router && frappe.router.slug) ? frappe.router.slug(page.name || page.title || "") : "");
         items.push({
-          label:  page.title || page.name,
+          label:  __(page.title || page.name),
           sub:    __("Workspace"),
           type:   "workspace",
+          search_text: (page.title || page.name) + " " + __(page.title || page.name),
           action: function () { if (workspace_route) frappe.set_route(workspace_route); },
         });
       });
@@ -187,12 +190,12 @@
 
       var scored = [];
       this.all_items.forEach(function (item) {
-        var lbl = item.label.toLowerCase();
-        if (lbl.indexOf(ql) === -1) return;
+        var searchable = (item.search_text || item.label).toLowerCase();
+        if (searchable.indexOf(ql) === -1) return;
         // score: 3=prefix, 2=word-prefix, 1=contains
         var score = 3;
-        if (lbl.indexOf(ql) !== 0) {
-          var words = lbl.split(/[\s\-_\/]+/);
+        if (searchable.indexOf(ql) !== 0) {
+          var words = searchable.split(/[\s\-_\/]+/);
           score = words.some(function (w) { return w.indexOf(ql) === 0; }) ? 2 : 1;
         }
         scored.push({ item: item, score: score });
