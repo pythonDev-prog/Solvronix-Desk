@@ -1378,6 +1378,19 @@ html[data-theme="dark"] #st-powered-by {
   font-weight: 600 !important;
 }
 
+/* Link-field autocomplete / dropdown — the keyboard-highlighted row must be
+   clearly visible and derived from the active theme accent. Falls back to the
+   brand-tinted --st-primary-50 when color-mix() is unavailable. */
+.awesomplete > ul > li:hover,
+.awesomplete > ul > li[aria-selected="true"] {
+  background-color: var(--st-primary-50, rgba(27, 29, 38, 0.06)) !important;
+  background-color: color-mix(in srgb, var(--st-accent, var(--st-primary)) 12%, transparent) !important;
+}
+.awesomplete > ul > li[aria-selected="true"] {
+  color: var(--st-accent, var(--st-primary)) !important;
+  font-weight: 600 !important;
+}
+
 /* Progress bars */
 .progress-bar {
   background: var(--st-primary-gradient) !important;

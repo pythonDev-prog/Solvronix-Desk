@@ -416,8 +416,8 @@ html[data-theme="dark"] .awesomplete > ul > li {
 
 html[data-theme="dark"] .awesomplete > ul > li:hover,
 html[data-theme="dark"] .awesomplete > ul [aria-selected="true"] {
-  background-color: rgba(255,255,255,0.06) !important;
-  color: var(--st-accent) !important;
+  background-color: color-mix(in srgb, var(--st-accent, #F57C00) 18%, transparent) !important;
+  color: var(--st-accent, #F57C00) !important;
 }
 
 /* ── Our Custom Components ───────────────────────────────────── */
