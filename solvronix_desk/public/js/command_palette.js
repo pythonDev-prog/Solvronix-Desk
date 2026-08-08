@@ -43,6 +43,7 @@
       var can_read    = user.can_read   || [];
       var can_create  = user.can_create || [];
       var rpt_map     = boot.allowed_reports || {};
+      var self        = this;
 
       var items = [];
 
@@ -53,7 +54,7 @@
         var rtype  = info.report_type || "";
         items.push({
           label:  __(name),
-          sub:    ref ? ref : __("Report"),
+          sub:    ref ? ref : self._t("Report"),
           type:   "report",
           search_text: name + " " + __(name),
           action: function () { frappe.set_route("query-report", name); },
@@ -67,7 +68,7 @@
         var creatable = can_create.indexOf(dt) !== -1;
         items.push({
           label:    __(dt),
-          sub:      creatable ? __("Open list · Ctrl+N to create") : __("Open list"),
+          sub:      creatable ? self._t("Open list · Ctrl+N to create") : self._t("Open list"),
           type:     "doctype",
           creatable: creatable,
           search_text: dt + " " + __(dt),
@@ -83,7 +84,7 @@
           ((frappe.router && frappe.router.slug) ? frappe.router.slug(page.name || page.title || "") : "");
         items.push({
           label:  __(page.title || page.name),
-          sub:    __("Workspace"),
+          sub:    self._t("Workspace"),
           type:   "workspace",
           search_text: (page.title || page.name) + " " + __(page.title || page.name),
           action: function () { if (workspace_route) frappe.set_route(workspace_route); },
@@ -100,6 +101,45 @@
       if (!this.all_items.length || (has_reports && !loaded_rpts)) {
         this._build_items();
       }
+    },
+
+    /* Palette UI strings with a built-in Arabic fallback so the palette stays
+       localized even when no Translation records exist for those strings. */
+    _t: function (str) {
+      var lang = (frappe.boot && frappe.boot.lang) || "";
+      var map = {
+        ar: {
+          "Quick Actions": "إجراءات سريعة",
+          "Reports": "التقارير",
+          "DocTypes": "أنواع المستندات",
+          "Workspaces": "مساحات العمل",
+          "Create document": "إنشاء مستند",
+          "Create document (if DocType exists)": "إنشاء مستند (إذا كان نوع المستند موجوداً)",
+          "New Sales Invoice": "فاتورة مبيعات جديدة",
+          "New Purchase Order": "أمر شراء جديد",
+          "New Customer": "عميل جديد",
+          "Theme Studio": "استوديو المظهر",
+          "Visual theme editor": "محرر المظهر المرئي",
+          "Home": "الرئيسية",
+          "Workspace": "مساحة العمل",
+          "Report": "تقرير",
+          "Open list": "فتح القائمة",
+          "Open list · Ctrl+N to create": "فتح القائمة · Ctrl+N للإنشاء",
+          "Search reports, doctypes, workspaces...": "ابحث في التقارير وأنواع المستندات ومساحات العمل...",
+          "Navigate": "تنقّل",
+          "Open": "فتح",
+          "Close": "إغلاق",
+          "reports": "تقارير",
+          "doctypes indexed": "نوع مستند مفهرسة",
+          "results": "نتائج",
+          "result": "نتيجة",
+          'No results for "{0}"': 'لا توجد نتائج لـ "{0}"',
+          "New {0}": "إنشاء {0}",
+        },
+      };
+      var m = map[lang];
+      if (m && m[str] !== undefined) return m[str];
+      return __(str);
     },
 
     /* ── 3. OPEN / CLOSE LIFECYCLE ────────────────────────────────────────── */
@@ -119,15 +159,15 @@
         '      <circle cx="6.5" cy="6.5" r="4.5"/><line x1="10.5" y1="10.5" x2="14" y2="14"/>',
         '    </svg>',
         '    <input class="st-cp-input" type="text"',
-        '      placeholder="Search reports, doctypes, workspaces..."',
+        '      placeholder="' + self._t("Search reports, doctypes, workspaces...") + '"',
         '      autocomplete="off" autocorrect="off" spellcheck="false" />',
         '    <kbd class="st-cp-kbd-hint">Esc</kbd>',
         '  </div>',
         '  <div class="st-cp-results" id="st-cp-results"></div>',
         '  <div class="st-cp-footer">',
-        '    <span class="st-cp-hint"><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>',
-        '    <span class="st-cp-hint"><kbd>↵</kbd> Open</span>',
-        '    <span class="st-cp-hint"><kbd>Esc</kbd> Close</span>',
+        '    <span class="st-cp-hint"><kbd>↑</kbd><kbd>↓</kbd> ' + self._t("Navigate") + '</span>',
+        '    <span class="st-cp-hint"><kbd>↵</kbd> ' + self._t("Open") + '</span>',
+        '    <span class="st-cp-hint"><kbd>Esc</kbd> ' + self._t("Close") + '</span>',
         '    <span class="st-cp-hint st-cp-count" id="st-cp-count"></span>',
         '  </div>',
         '</div>',
@@ -169,19 +209,19 @@
     _render_default: function () {
       var hasERPNext = !!(frappe.boot && frappe.boot.versions && frappe.boot.versions.erpnext);
       var quick = hasERPNext ? [
-        { label: __("New Sales Invoice"),  sub: __("Create document"), type: "create", action: function () { frappe.new_doc("Sales Invoice"); } },
-        { label: __("New Purchase Order"), sub: __("Create document"), type: "create", action: function () { frappe.new_doc("Purchase Order"); } },
-        { label: __("New Customer"),       sub: __("Create document"), type: "create", action: function () { frappe.new_doc("Customer"); } },
-        { label: __("Theme Studio"),       sub: __("Visual theme editor"), type: "action", action: function () { frappe.set_route("theme-studio"); } },
-        { label: __("Home"),               sub: __("Workspace"),        type: "workspace", action: function () { frappe.set_route(""); } },
+        { label: this._t("New Sales Invoice"),  sub: this._t("Create document"), type: "create", action: function () { frappe.new_doc("Sales Invoice"); } },
+        { label: this._t("New Purchase Order"), sub: this._t("Create document"), type: "create", action: function () { frappe.new_doc("Purchase Order"); } },
+        { label: this._t("New Customer"),       sub: this._t("Create document"), type: "create", action: function () { frappe.new_doc("Customer"); } },
+        { label: this._t("Theme Studio"),       sub: this._t("Visual theme editor"), type: "action", action: function () { frappe.set_route("theme-studio"); } },
+        { label: this._t("Home"),               sub: this._t("Workspace"),        type: "workspace", action: function () { frappe.set_route(""); } },
       ] : [
-        { label: __("Theme Studio"),       sub: __("Visual theme editor"), type: "action", action: function () { frappe.set_route("theme-studio"); } },
-        { label: __("Home"),               sub: __("Workspace"),        type: "workspace", action: function () { frappe.set_route(""); } },
+        { label: this._t("Theme Studio"),       sub: this._t("Visual theme editor"), type: "action", action: function () { frappe.set_route("theme-studio"); } },
+        { label: this._t("Home"),               sub: this._t("Workspace"),        type: "workspace", action: function () { frappe.set_route(""); } },
       ];
       var rpt_count = Object.keys((frappe.boot && frappe.boot.allowed_reports) || {}).length;
       var dt_count  = ((frappe.boot && frappe.boot.user && frappe.boot.user.can_read) || []).length;
-      var count_str = rpt_count + " " + __("reports") + " · " + dt_count + " " + __("doctypes indexed");
-      this._render([{ section: __("Quick Actions"), items: quick }], null, count_str);
+      var count_str = rpt_count + " " + this._t("reports") + " · " + dt_count + " " + this._t("doctypes indexed");
+      this._render([{ section: this._t("Quick Actions"), items: quick }], null, count_str);
     },
 
     _search: function (q) {
@@ -218,28 +258,28 @@
       });
 
       var sections = [];
-      if (reports.length)    sections.push({ section: __("Reports"),    items: reports });
-      if (doctypes.length)   sections.push({ section: __("DocTypes"),   items: doctypes });
-      if (workspaces.length) sections.push({ section: __("Workspaces"), items: workspaces });
+      if (reports.length)    sections.push({ section: this._t("Reports"),    items: reports });
+      if (doctypes.length)   sections.push({ section: this._t("DocTypes"),   items: doctypes });
+      if (workspaces.length) sections.push({ section: this._t("Workspaces"), items: workspaces });
 
       var total = scored.length;
 
       if (!sections.length) {
         var qfinal = q;
         var create_item = {
-          label: __("New {0}", [q]),
-          sub:   __("Create document (if DocType exists)"),
+          label: frappe.utils.format(this._t("New {0}"), [q]),
+          sub:   this._t("Create document (if DocType exists)"),
           type:  "create",
           action: function () {
             try { frappe.new_doc(qfinal); }
             catch (e) { frappe.msgprint("DocType not found: " + qfinal); }
           }
         };
-        sections = [{ section: __('No results for "{0}"', [q]), items: [create_item] }];
+        sections = [{ section: frappe.utils.format(this._t('No results for "{0}"'), [q]), items: [create_item] }];
         total = 0;
       }
 
-      this._render(sections, null, total > 0 ? total + " " + (total !== 1 ? __("results") : __("result")) : "");
+      this._render(sections, null, total > 0 ? total + " " + (total !== 1 ? this._t("results") : this._t("result")) : "");
     },
 
     /* ── 5. RESULT RENDERING / KEYBOARD NAVIGATION ────────────────────────── */
