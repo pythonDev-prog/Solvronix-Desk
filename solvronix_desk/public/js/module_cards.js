@@ -130,8 +130,8 @@
       html += '<div class="st-ws-card st-skeleton">' +
               '<div class="st-ws-card-icon"></div>' +
               '<div class="st-ws-card-info">' +
-              '<div class="st-ws-card-name">Loading</div>' +
-              '<div class="st-ws-card-desc">Please wait</div>' +
+              '<div class="st-ws-card-name">' + __("Loading") + '</div>' +
+              '<div class="st-ws-card-desc">' + __("Please wait") + '</div>' +
               '</div></div>';
     }
     html += '</div>';
@@ -155,8 +155,8 @@
            ' tabindex="0">' +
            '<div class="st-ws-card-icon">' + icon + '</div>' +
            '<div class="st-ws-card-info">' +
-           '<div class="st-ws-card-name">' + frappe.utils.escape_html(title) + '</div>' +
-           (desc ? '<div class="st-ws-card-desc">' + frappe.utils.escape_html(desc) + '</div>' : '') +
+           '<div class="st-ws-card-name">' + frappe.utils.escape_html(__(title)) + '</div>' +
+           (desc ? '<div class="st-ws-card-desc">' + frappe.utils.escape_html(__(desc)) + '</div>' : '') +
            '</div>' +
            '</a>';
   }
@@ -230,11 +230,11 @@
     /* Grid shell with skeleton loaders */
     grid.innerHTML =
       '<div class="st-ws-header">' +
-      '<div class="st-ws-title">All Apps</div>' +
-      '<div class="st-ws-subtitle">Jump to any workspace from here</div>' +
+      '<div class="st-ws-title">' + __("All Apps") + '</div>' +
+      '<div class="st-ws-subtitle">' + __("Jump to any workspace from here") + '</div>' +
       '</div>' +
       '<div class="st-ws-search-wrap">' +
-      '<input id="st-ws-search-input" class="st-ws-search" type="text" placeholder="Search apps…" autocomplete="off">' +
+      '<input id="st-ws-search-input" class="st-ws-search" type="text" placeholder="' + __("Search apps…") + '" autocomplete="off">' +
       '</div>' +
       buildSkeletons(8);
 
@@ -261,7 +261,7 @@
 
       if (!pages.length) {
         grid.insertAdjacentHTML("beforeend",
-          '<div class="st-ws-cards"><div class="st-ws-empty">No workspaces found.</div></div>');
+          '<div class="st-ws-cards"><div class="st-ws-empty">' + __("No workspaces found.") + '</div></div>');
         return;
       }
 
@@ -269,7 +269,7 @@
       for (var i = 0; i < pages.length; i++) {
         html += buildCard(pages[i], i);
       }
-      html += '<div id="st-ws-empty" class="st-ws-empty" style="display:none">No apps match your search.</div>';
+      html += '<div id="st-ws-empty" class="st-ws-empty" style="display:none">' + __("No apps match your search.") + '</div>';
       html += '</div>';
       grid.insertAdjacentHTML("beforeend", html);
 

@@ -412,16 +412,16 @@
 
     /* Button */
     var $btn = $(
-      '<button id="st-module-switch-btn" title="Switch Workspace (Ctrl+M)">' +
+      '<button id="st-module-switch-btn" title="' + frappe._("Switch Workspace (Ctrl+M)") + '">' +
         '<span style="font-size:13px;margin-right:6px;">&#9783;</span>' +
-        "<span>Workspaces</span>" +
+        "<span>" + frappe._("Workspaces") + "</span>" +
         '<span class="st-chevron">&#9660;</span>' +
       "</button>"
     );
 
     /* Dropdown (appended to body to escape overflow:hidden) */
     var $dropdown = $('<div id="st-module-switcher-dropdown" style="display:none;position:fixed;z-index:1050;"></div>');
-    var $search = $('<input id="st-module-search" type="text" placeholder="Search workspaces…">');
+    var $search = $('<input id="st-module-search" type="text" placeholder="' + frappe._("Search workspaces…") + '">');
     $dropdown.append($search);
 
     var currentItems = [];
@@ -437,19 +437,21 @@
       var lf = (filter || "").toLowerCase();
 
       Object.keys(categories).sort().forEach(function (cat) {
+        var catLabel = frappe._(cat);
         var catItems = categories[cat].filter(function (p) {
-          return !lf || (p.title || "").toLowerCase().indexOf(lf) !== -1;
+          var label = frappe._(p.title || "");
+          return !lf || label.toLowerCase().indexOf(lf) !== -1;
         });
         if (!catItems.length) return;
 
-        $dropdown.append('<div class="st-module-category">' + cat + "</div>");
+        $dropdown.append('<div class="st-module-category">' + frappe.utils.escape_html(catLabel) + "</div>");
 
         catItems.forEach(function (p) {
           var route = p.route || slugify(p.title);
           var $item = $(
             '<a class="st-module-item" href="/desk/' + route + '">' +
               '<span class="st-module-dot"></span>' +
-              "<span>" + (p.title || route) + "</span>" +
+              "<span>" + frappe.utils.escape_html(frappe._(p.title || route)) + "</span>" +
             "</a>"
           );
           $item.on("click", function () { closeDropdown(); });
@@ -525,7 +527,7 @@
     });
 
     $(document).on("keydown.st_module_switcher", function (e) {
-      if (e.ctrlKey && (e.key === "m" || e.key === "M")) {
+      if ((e.ctrlKey || e.metaKey) && (e.key === "m" || e.key === "M")) {
         e.preventDefault();
         if ($dropdown.is(":visible")) closeDropdown();
         else openDropdown();
@@ -1220,44 +1222,45 @@
       });
     }
 
-    Object.keys(groups).sort().forEach(function (grpName) {
-      var items = groups[grpName];
-      if (!items.length) return;
+      Object.keys(groups).sort().forEach(function (grpName) {
+        var items = groups[grpName];
+        if (!items.length) return;
 
-      var sectionId = "st-op-sec-" + grpName.replace(/\s+/g, "-").toLowerCase();
-      var $sec = $('<div class="st-op-section" data-section="' + grpName + '"></div>');
-      var $sh = $(
-        '<div class="st-op-section-head">' +
-          '<span>' + grpName + '</span>' +
-          '<span class="st-op-toggle">&#9660;</span>' +
-        "</div>"
-      );
-      var $items = $('<div class="st-op-items" id="' + sectionId + '"></div>');
-
-      items.forEach(function (p) {
-        var slug = p.route || (frappe.router && frappe.router.slug(p.title || p.name)) || encodeURIComponent((p.title || p.name || "").toLowerCase());
-        var $a = $(
-          '<a class="st-op-item" href="/desk/' + slug + '" data-title="' + (p.title || p.name) + '">' +
-            '<span class="st-op-dot"></span>' +
-            (p.title || p.name) +
-          "</a>"
+        var sectionId = "st-op-sec-" + grpName.replace(/\s+/g, "-").toLowerCase();
+        var $sec = $('<div class="st-op-section" data-section="' + grpName + '"></div>');
+        var $sh = $(
+          '<div class="st-op-section-head">' +
+            '<span>' + frappe.utils.escape_html(frappe._(grpName)) + '</span>' +
+            '<span class="st-op-toggle">&#9660;</span>' +
+          "</div>"
         );
-        $a.on("click", function (e) {
-          closeOptionsPanel();
+        var $items = $('<div class="st-op-items" id="' + sectionId + '"></div>');
+
+        items.forEach(function (p) {
+          var slug = p.route || (frappe.router && frappe.router.slug(p.title || p.name)) || encodeURIComponent((p.title || p.name || "").toLowerCase());
+          var label = frappe._(p.title || p.name);
+          var $a = $(
+            '<a class="st-op-item" href="/desk/' + slug + '" data-title="' + frappe.utils.escape_html(label) + '">' +
+              '<span class="st-op-dot"></span>' +
+              frappe.utils.escape_html(label) +
+            "</a>"
+          );
+          $a.on("click", function (e) {
+            closeOptionsPanel();
+          });
+          $items.append($a);
         });
-        $items.append($a);
-      });
 
-      $sh.on("click", function () {
-        $sh.toggleClass("collapsed");
-        $items.toggleClass("hidden");
-      });
+        $sh.on("click", function () {
+          $sh.toggleClass("collapsed");
+          $items.toggleClass("hidden");
+        });
 
-      $sec.append($sh).append($items);
-      $body.append($sec);
-      _optionsSections.push({ name: grpName, $sec: $sec, $items: $items });
-    });
-  }
+        $sec.append($sh).append($items);
+        $body.append($sec);
+        _optionsSections.push({ name: grpName, $sec: $sec, $items: $items });
+      });
+    }
 
   function filterOptionsPanel(query) {
     var q = (query || "").toLowerCase();
@@ -1499,6 +1502,7 @@
       injectSidebarBrandingHeader();   /* retry — branding may already be cached */
       injectIconRail();
       patchNativeSidebar();
+      injectModuleSwitcher();
       injectPoweredBy();
     });
 
@@ -1513,6 +1517,7 @@
     $(document).on("page-change", function () {
       injectIconRail();
       patchNativeSidebar();
+      injectModuleSwitcher();
       injectPoweredBy();
       injectSetupGuide();
       setTimeout(moveNativeBell, 400);
