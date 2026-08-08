@@ -412,7 +412,7 @@
 
     /* Button */
     var $btn = $(
-      '<button id="st-module-switch-btn" title="' + frappe._("Switch Workspace (Ctrl+M)") + '">' +
+      '<button id="st-module-switch-btn" title="' + frappe._("Switch Workspace") + '">' +
         '<span style="font-size:13px;margin-right:6px;">&#9783;</span>' +
         "<span>" + frappe._("Workspaces") + "</span>" +
         '<span class="st-chevron">&#9660;</span>' +
@@ -526,13 +526,9 @@
       if (!$dropdown[0].contains(e.target) && e.target !== $btn[0]) closeDropdown();
     });
 
-    $(document).on("keydown.st_module_switcher", function (e) {
-      if ((e.ctrlKey || e.metaKey) && (e.key === "m" || e.key === "M")) {
-        e.preventDefault();
-        if ($dropdown.is(":visible")) closeDropdown();
-        else openDropdown();
-      }
-    });
+    /* Ctrl/Cmd+M opens the All Options panel (see the global keydown handler
+       next to openOptionsPanel), not this dropdown — matched by e.code so it
+       also works with a non-Latin keyboard layout. */
 
     /* Place button after sidebar header */
     var $hdr = $sidebar.find("#st-sidebar-header");
@@ -1319,6 +1315,18 @@
     $("#st-options-search").val("");
     filterOptionsPanel("");
   }
+
+  /* Ctrl/Cmd+M opens the All Options panel. Matched by e.code ("KeyM") — the
+     physical key position — instead of e.key, so it works regardless of the
+     active keyboard layout (an Arabic/Farsi/etc. layout reports an Arabic
+     character in e.key, never "m", which is why the shortcut was dead on
+     non-Latin keyboards). */
+  $(document).on("keydown.st_open_options", function (e) {
+    if ((e.ctrlKey || e.metaKey) && (e.code === "KeyM" || (e.key || "").toLowerCase() === "m")) {
+      e.preventDefault();
+      openOptionsPanel();
+    }
+  });
 
   /* ────────────────────────────────────────────────────────────────────────────
      NATIVE SIDEBAR PATCHES
