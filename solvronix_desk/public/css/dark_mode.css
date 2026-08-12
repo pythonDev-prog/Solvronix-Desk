@@ -45,7 +45,11 @@ html[data-theme="dark"] {
   --bg-light-gray:          var(--st-card-bg);
   --bg-gray:                var(--st-card-bg);
   --bg-grey:                var(--st-card-bg);
-  --bg-dark-gray:           var(--st-page-bg);
+  /* Frappe pairs --bg-dark-gray with dark text (--primary) e.g. on the active
+     Filter button (.filter-button.btn-primary-light) — it must stay lighter
+     than the page background, same as stock Frappe's --gray-500 pairing, or
+     that text becomes unreadable. Do not collapse this to --st-page-bg. */
+  --bg-dark-gray:           var(--gray-500);
 
   /* Frappe dark.scss sets these via --gray-700/800 (dark in Frappe = near-black),
      but our gray scale is inverted (light text on dark bg), so we override them
@@ -162,6 +166,15 @@ html[data-theme="dark"] .form-control::placeholder,
 html[data-theme="dark"] input::placeholder,
 html[data-theme="dark"] textarea::placeholder {
   color: rgba(255,255,255,0.30) !important;
+}
+
+/* Frappe's checkbox.scss never sets an unchecked background-color, so it falls
+   back to the browser's default white/light control face — invisible in light
+   mode but a jarring white square in dark mode. Give it an explicit dark
+   background; leave :checked alone since Frappe already paints that with
+   var(--primary) + the check icon. */
+html[data-theme="dark"] input[type="checkbox"]:not(:checked) {
+  background-color: var(--st-input-bg) !important;
 }
 
 html[data-theme="dark"] .form-control:focus,
