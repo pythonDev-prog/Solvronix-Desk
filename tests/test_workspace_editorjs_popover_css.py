@@ -27,7 +27,7 @@ class WorkspaceEditorJSPopoverCSSTest(unittest.TestCase):
         self.assertIn("z-index: 1195 !important", css)
     def test_workspace_css_cache_is_bumped(self):
         hooks = HOOKS.read_text(encoding="utf-8")
-        self.assertIn("/assets/solvronix_desk/css/solvronix_desk.css?v=54", hooks)
-        self.assertIn("/assets/solvronix_desk/js/solvronix_desk.js?v=65", hooks)
+        self.assertIn("/assets/solvronix_desk/css/solvronix_desk.css?v=56", hooks)
+        self.assertIn("/assets/solvronix_desk/js/solvronix_desk.js?v=67", hooks)
 if __name__ == "__main__":
     unittest.main()

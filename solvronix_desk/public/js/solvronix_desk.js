@@ -651,9 +651,10 @@
     /* ── Build toolbar ── */
     var $tb = $('<div id="st-top-toolbar"></div>');
 
-    /* Left: clock + Today's View (user moved to right avatar button) */
+    /* Left: brand name + clock + Today's View (user moved to right avatar button) */
     var $left = $(
       '<div class="st-tb-left">' +
+        '<span id="st-tb-brand">Flax Soft</span><span class="st-tb-sep"></span>' +
         '<span id="st-tb-clock"></span>' +
         '<span class="st-tb-sep"></span>' +
         '<a id="st-sh-link" href="/desk/smart-home" title="Today\'s View">&#9732; Today\'s View</a>' +

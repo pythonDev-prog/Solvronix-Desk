@@ -1548,6 +1548,15 @@ body.st-has-toolbar header.navbar {
   letter-spacing: 0.03em;
 }
 
+#st-tb-brand {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+}
+
 /* Today's View quick link */
 #st-sh-link {
   font-size: 11px;
