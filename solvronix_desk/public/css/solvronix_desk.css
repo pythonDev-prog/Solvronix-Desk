@@ -1146,6 +1146,8 @@ html[data-theme="dark"] .for-forgot .page-card-actions::after {
   border-top-color: transparent !important;
 }
 
+#st-module-switch-btn { display: none !important; }
+
 /* ── MODULE SWITCHER (enhanced) ─────────────────────────────────────────────── */
 #st-module-switch-btn {
   display: flex;
