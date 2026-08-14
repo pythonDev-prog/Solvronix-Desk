@@ -661,14 +661,19 @@
       "</div>"
     );
 
-    /* Clock ticker */
+    /* Clock ticker — 12h with Arabic AM/PM (م/ص) */
     function tickClock() {
       var now = new Date();
-      var h = now.getHours().toString().padStart(2, "0");
+      var h = now.getHours();
       var m = now.getMinutes().toString().padStart(2, "0");
       var s = now.getSeconds().toString().padStart(2, "0");
+      var isPM = h >= 12;
+      var h12 = h % 12 || 12;
       var el = document.getElementById("st-tb-clock");
-      if (el) el.textContent = h + ":" + m + ":" + s;
+      if (el) {
+        el.textContent = h12 + ":" + m + ":" + s + " " + (isPM ? "ص" : "م");
+        el.title = isPM ? "مساءً" : "صباحاً";
+      }
     }
     tickClock();
     setInterval(tickClock, 1000);
