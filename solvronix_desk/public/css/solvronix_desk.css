@@ -1542,10 +1542,12 @@ body.st-has-toolbar header.navbar {
 
 /* Current time */
 #st-tb-clock {
-  font-size: 11px;
-  color: rgba(255,255,255,0.45);
+  font-size: 13px;
+  color: #fff;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.35);
 }
 
 #st-tb-brand {
