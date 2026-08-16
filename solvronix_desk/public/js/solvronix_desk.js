@@ -671,7 +671,7 @@
       var h12 = h % 12 || 12;
       var el = document.getElementById("st-tb-clock");
       if (el) {
-        el.textContent = h12 + ":" + m + ":" + s + " " + (isPM ? "ص" : "م");
+        el.textContent = h12 + ":" + m + ":" + s + " " + (isPM ? "م" : "ص");
         el.title = isPM ? "مساءً" : "صباحاً";
       }
     }
